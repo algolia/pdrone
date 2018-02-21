@@ -1,15 +1,15 @@
-import { parseString } from 'xml2js';
-import DroneCommand from './DroneCommand';
-import Logger from 'winston';
-import InvalidCommandError from './InvalidCommandError';
-import { getInstalledPathSync as nodePath } from 'get-installed-path';
-import fs from 'fs';
-import * as path from 'path';
+const { parseString } = require('xml2js');
+const DroneCommand = require('./DroneCommand');
+const Logger = require('winston');
+const InvalidCommandError = require('./InvalidCommandError');
+const fs = require('fs');
+const path = require('path');
+const resolve = require('resolve');
 
 /**
  * Command parser used for looking up commands in the xml definition
  */
-export default class CommandParser {
+module.exports = class CommandParser {
   /**
    * CommandParser constructor
    */
@@ -64,10 +64,7 @@ export default class CommandParser {
    * const backFlip = parser.getCommand('minidrone', 'Animations', 'Flip', {direction: 'back'});
    */
   getCommand(projectName, className, commandName, commandArguments = {}) {
-    const cacheToken = [
-      projectName, className,
-      commandName,
-    ].join('-');
+    const cacheToken = [projectName, className, commandName].join('-');
 
     if (typeof this._commandCache[cacheToken] === 'undefined') {
       const project = this._getJson(projectName).project;
@@ -137,14 +134,20 @@ export default class CommandParser {
       this._assertElementExists(targetClass, 'class', classId, context);
 
       // find command
-      const targetCommand = targetClass.cmd.find(x => Number(x.$.id) === commandId);
+      const targetCommand = targetClass.cmd.find(
+        x => Number(x.$.id) === commandId
+      );
 
       context.push(targetClass.$.name);
 
       this._assertElementExists(targetCommand, 'command', commandId, context);
 
       // Build command and store it
-      this._commandCache[cacheToken] = new DroneCommand(project, targetClass, targetCommand);
+      this._commandCache[cacheToken] = new DroneCommand(
+        project,
+        targetClass,
+        targetCommand
+      );
     }
 
     return this._commandCache[cacheToken].clone();
@@ -189,7 +192,11 @@ export default class CommandParser {
           value = '';
           let c = ''; // Last character
 
-          for (valueSize = 0; valueSize < buffer.length && c !== '\0'; valueSize++) {
+          for (
+            valueSize = 0;
+            valueSize < buffer.length && c !== '\0';
+            valueSize++
+          ) {
             c = String.fromCharCode(buffer[bufferOffset]);
 
             value += c;
@@ -202,7 +209,11 @@ export default class CommandParser {
           value = buffer.readDoubleLE(bufferOffset);
           break;
         default:
-          throw new TypeError(`Can't parse buffer: unknown data type "${arg.type}" for argument "${arg.name}" in ${command.getToken()}`);
+          throw new TypeError(
+            `Can't parse buffer: unknown data type "${
+              arg.type
+            }" for argument "${arg.name}" in ${command.getToken()}`
+          );
       }
 
       arg.value = value;
@@ -234,7 +245,7 @@ export default class CommandParser {
     if (typeof this.__files === 'undefined') {
       const arsdkXmlPath = CommandParser._arsdkXmlPath;
 
-      const isFile = path => fs.lstatSync(path).isFile();
+      const isFile = filePath => fs.lstatSync(filePath).isFile();
 
       this.__files = fs
         .readdirSync(arsdkXmlPath)
@@ -285,9 +296,9 @@ export default class CommandParser {
    */
   static get _arsdkXmlPath() {
     if (typeof this.__arsdkPath === 'undefined') {
-      this.__arsdkPath = nodePath('arsdk-xml', { local: true }) + '/xml';
+      this.__arsdkPath = path.dirname(resolve.sync('arsdk-xml/xml/common.xml'));
     }
 
     return this.__arsdkPath;
   }
-}
+};

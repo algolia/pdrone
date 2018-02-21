@@ -1,4 +1,4 @@
-import Enum from './util/Enum';
+const Enum = require('./util/Enum');
 
 /**
  * Drone Command Argument class
@@ -7,7 +7,7 @@ import Enum from './util/Enum';
  *
  * @property {Enum|undefined} enum - Enum store containing possible enum values if `this.type === 'enum'`. If set then `this.hasEnumProperty === true`.
  */
-export default class DroneCommandArgument {
+module.exports = class DroneCommandArgument {
   /**
    * Command argument constructor
    * @param {object} raw - Raw command argument data from the xml specification
@@ -69,7 +69,7 @@ export default class DroneCommandArgument {
    */
   get value() {
     if (this.type === 'string' && !this._value.endsWith('\0')) {
-      return this._value + '\0';
+      return `${this._value}\0`;
     } else if (this.type === 'float') {
       return Math.fround(this._value);
 
@@ -88,11 +88,8 @@ export default class DroneCommandArgument {
    * @param {number|string} value - Parameter value
    * @throws TypeError
    */
-  set value(value) {
-    if (Object.is(value, -0)) {
-      value = 0;
-    }
-
+  set value(rawValue) {
+    const value = Object.is(rawValue, -0) ? 0 : rawValue;
     this._value = this._parseValue(value);
   }
 
@@ -124,13 +121,16 @@ export default class DroneCommandArgument {
           //   return value;
         }
 
-        throw new TypeError(`Value ${value} could not be interpreted as an enum value for ${this.name}. Available options are ${this.enum.toString()}`);
+        throw new TypeError(
+          `Value ${value} could not be interpreted as an enum value for ${
+            this.name
+          }. Available options are ${this.enum.toString()}`
+        );
       case 'string':
         return String(value);
+      default:
+        return Number(value);
     }
-
-    // Default behavior
-    return Number(value);
   }
 
   /**
@@ -159,9 +159,9 @@ export default class DroneCommandArgument {
         return 8;
       case 'enum':
         return 4;
+      default:
+        return 0;
     }
-
-    return 0;
   }
 
   /**
@@ -202,6 +202,8 @@ export default class DroneCommandArgument {
       case 'enum':
         value = `"${this.enum.findForValue(this.value)}"[${this.value}]`;
         break;
+      default:
+        value = this.value;
     }
 
     if (!debug) {
@@ -210,4 +212,4 @@ export default class DroneCommandArgument {
 
     return `(${this.type})${this.name}=${value}`;
   }
-}
+};

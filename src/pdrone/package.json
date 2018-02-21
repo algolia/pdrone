@@ -1,0 +1,15 @@
+{
+  "name": "pdrone",
+  "description": "Parrot Drones low level library",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "repository": "vvo/pdrone-js-sdk",
+  "authors": [
+    "Bas <mega@ioexception.at>",
+    "Vincent Voyer <vincent.voyer@algolia.com>"
+  ],
+  "dependencies": {
+    "pdrone-low-level": "1.0.0"
+  }
+}

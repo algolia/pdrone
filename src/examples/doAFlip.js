@@ -1,11 +1,12 @@
-const {DroneConnection, CommandParser} = require('../dist/bundle');
+const { DroneConnection, CommandParser } = require('pdrone-low-level');
 
 const parser = new CommandParser();
 const drone = new DroneConnection();
 const takeoff = parser.getCommand('minidrone', 'Piloting', 'TakeOff');
 const landing = parser.getCommand('minidrone', 'Piloting', 'Landing');
-const backFlip = parser.getCommand('minidrone', 'Animations', 'Flip', {direction: 'back'});
-
+const backFlip = parser.getCommand('minidrone', 'Animations', 'Flip', {
+  direction: 'back',
+});
 
 drone.on('connected', () => {
   // Makes the code a bit clearer

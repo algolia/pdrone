@@ -1,69 +1,35 @@
 {
-  "name": "minidrone-js",
-  "version": "0.3.2",
-  "description": "Parrot Minidrone library",
-  "main": "dist/bundle.min.js",
-  "repository": "https://github.com/Mechazawa/minidrone-js",
-  "author": "Bas <mega@ioexception.at>",
-  "license": "MIT",
-  "dependencies": {
-    "arsdk-xml": "git://github.com/Parrot-Developers/arsdk-xml#f241e26",
-    "case": "^1.5.4",
-    "events": "^1.1.1",
-    "get-installed-path": "^4.0.8",
-    "noble": "git://github.com/jacobrosenthal/noble.git#highsierra",
-    "node-gyp": "^3.6.2",
-    "source-map-support": "^0.5.3",
-    "winston": "^2.4.0",
-    "xml2js": "^0.4.19"
+  "private": true,
+  "renovate": {
+    "extends": [
+      "config:js-lib",
+      "algolia"
+    ]
+  },
+  "workspaces": [
+    "src/*"
+  ],
+  "eslintConfig": {
+    "extends": "algolia",
+    "rules": {
+      "import/no-commonjs": "off",
+      "valid-jsdoc": "off"
+    }
+  },
+  "eslintIgnore": [
+    "src/*/node_modules"
+  ],
+  "engines": {
+    "node": "^9.4.0",
+    "yarn": "^1.3.2"
   },
   "devDependencies": {
-    "ava": "^0.25.0",
-    "babel-cli": "^6.26.0",
-    "babel-core": "6",
-    "babel-eslint": "^8.2.1",
-    "babel-loader": "^7.1.2",
-    "babel-plugin-transform-export-extensions": "^6.22.0",
-    "babel-preset-env": "^1.6.1",
-    "esdoc": "^1.0.4",
-    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
-    "esdoc-standard-plugin": "^1.0.0",
-    "eslint": "^4.16.0",
-    "fs-extra": "^5.0.0",
-    "fsevents": "^1.1.3",
-    "path": "^0.12.7",
-    "raw-loader": "^0.5.1",
-    "uglifyjs-webpack-plugin": "^1.1.6",
-    "webpack": "^3.10.0"
-  },
-  "scripts": {
-    "build": "rm -r dist||true; mkdir dist && npx webpack",
-    "watch": "rm -r dist||true; mkdir dist && npx webpack --watch",
-    "docs": "npx esdoc"
-  },
-  "babel": {
-    "presets": [
-      [
-        "env",
-        {
-          "targets": {
-            "browsers": [
-              "> 1%"
-            ]
-          }
-        }
-      ]
-    ],
-    "sourceMap": true,
-    "env": {
-      "production": {
-        "presets": [
-          "@ava/stage-4"
-        ]
-      }
-    },
-    "plugins": [
-      "transform-export-extensions"
-    ]
+    "babel-eslint": "8.2.2",
+    "eslint": "4.18.1",
+    "eslint-config-algolia": "13.1.0",
+    "eslint-config-prettier": "2.9.0",
+    "eslint-plugin-import": "2.8.0",
+    "eslint-plugin-prettier": "2.6.0",
+    "prettier": "1.10.2"
   }
 }

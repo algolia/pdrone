@@ -1,5 +1,5 @@
-import { constant as constantCase } from 'case';
-import { getTypeName } from './reflection';
+const { constant: constantCase } = require('case');
+const { getTypeName } = require('./reflection');
 
 /**
  * Base enum class
@@ -20,7 +20,7 @@ import { getTypeName } from './reflection';
  *
  * // etc...
  */
-export default class Enum {
+module.exports = class Enum {
   /**
    * @param {Object<String, *>|Array<String>} enums - Data to build the enum from
    * @param {boolean} auto - Auto generate enum from data making assumptions about
@@ -30,7 +30,9 @@ export default class Enum {
     const isArray = enums instanceof Array;
 
     if (auto && !isArray) {
-      throw new TypeError(`Expected enums to be of type "Array" got "${getTypeName(enums)}"`);
+      throw new TypeError(
+        `Expected enums to be of type "Array" got "${getTypeName(enums)}"`
+      );
     }
 
     if (isArray && auto) {
@@ -108,7 +110,9 @@ export default class Enum {
    * @returns {string} - name
    */
   findForValue(value) {
-    const index = this.keys().map(key => this[key]).findIndex(x => x === value);
+    const index = this.keys()
+      .map(key => this[key])
+      .findIndex(x => x === value);
 
     return this.keys()[index];
   }
@@ -131,6 +135,8 @@ export default class Enum {
    * @returns {string}
    */
   toString() {
-    return this.keys().map(key => key + '=' + this[key]).join(', ');
+    return this.keys()
+      .map(key => `${key}=${this[key]}`)
+      .join(', ');
   }
-}
+};

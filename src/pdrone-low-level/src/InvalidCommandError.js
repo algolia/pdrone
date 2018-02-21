@@ -7,18 +7,18 @@
 function d2h(d) {
   const h = Number(d).toString(16);
 
-  return h.length === 1 ? '0' + h : h;
+  return h.length === 1 ? `0${h}` : h;
 }
 
 /**
  * Thrown when an invalid command is requested or received
  */
-export default class InvalidCommandError extends Error {
+module.exports = class InvalidCommandError extends Error {
   constructor(value, type, target, context = []) {
     let message;
 
     if (typeof target === 'number') {
-      message = 'with the value ' + d2h(target);
+      message = `with the value ${d2h(target)}`;
     } else {
       message = `called "${target}"`;
     }
@@ -26,9 +26,9 @@ export default class InvalidCommandError extends Error {
     message = `Can't find ${type} ${message}`;
 
     if (context.length > 0) {
-      message += ' (' + context.join(', ') + ')';
+      message += ` (${context.join(', ')})`;
     }
 
     super(message);
   }
-}
+};

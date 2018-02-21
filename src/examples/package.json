@@ -1,0 +1,16 @@
+{
+  "name": "examples",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "dependencies": {
+    "dualshock-controller": "1.1.1",
+    "pdrone-low-level": "1.0.0",
+    "pdrone": "1.0.0"
+  },
+  "eslintConfig": {
+    "rules": {
+      "no-console": "off"
+    }
+  }
+}

@@ -1,31 +1,52 @@
-import EventEmitter from 'events';
-import Logger from 'winston';
-import Enum from './util/Enum';
-import CommandParser from './CommandParser';
+const EventEmitter = require('events');
+const Logger = require('winston');
+Logger.level = 'debug';
+const Enum = require('./util/Enum');
+const CommandParser = require('./CommandParser');
 
-const MANUFACTURER_SERIALS = ['4300cf1900090100', '4300cf1909090100', '4300cf1907090100'];
-const DRONE_PREFIXES = ['RS_', 'Mars_', 'Travis_', 'Maclan_', 'Mambo_', 'Blaze_', 'NewZ_'];
+const MANUFACTURER_SERIALS = [
+  '4300cf1900090100',
+  '4300cf1909090100',
+  '4300cf1907090100',
+];
+const DRONE_PREFIXES = [
+  'RS_',
+  'Mars_',
+  'Travis_',
+  'Maclan_',
+  'Maclan_',
+  'Mambo_',
+  'Blaze_',
+  'NewZ_',
+];
 
 // http://forum.developer.parrot.com/t/minidrone-characteristics-uuid/4686/3
 const handshakeUuids = [
-  'fb0f', 'fb0e', 'fb1b', 'fb1c',
-  'fd22', 'fd23', 'fd24', 'fd52',
-  'fd53', 'fd54',
+  'fb0f',
+  'fb0e',
+  'fb1b',
+  'fb1c',
+  'fd22',
+  'fd23',
+  'fd24',
+  'fd52',
+  'fd53',
+  'fd54',
 ];
 
 // the following UUID segments come from the Mambo and from the documenation at
 // http://forum.developer.parrot.com/t/minidrone-characteristics-uuid/4686/3
 // the 3rd and 4th bytes are used to identify the service
-const serviceUuids = {
-  'fa': 'ARCOMMAND_SENDING_SERVICE',
-  'fb': 'ARCOMMAND_RECEIVING_SERVICE',
-  'fc': 'PERFORMANCE_COUNTER_SERVICE',
-  'fd21': 'NORMAL_BLE_FTP_SERVICE',
-  'fd51': 'UPDATE_BLE_FTP',
-  'fe00': 'UPDATE_RFCOMM_SERVICE',
-  '1800': 'Device Info',
-  '1801': 'unknown',
-};
+// const serviceUuids = {
+//   fa: 'ARCOMMAND_SENDING_SERVICE',
+//   fb: 'ARCOMMAND_RECEIVING_SERVICE',
+//   fc: 'PERFORMANCE_COUNTER_SERVICE',
+//   fd21: 'NORMAL_BLE_FTP_SERVICE',
+//   fd51: 'UPDATE_BLE_FTP',
+//   fe00: 'UPDATE_RFCOMM_SERVICE',
+//   '1800': 'Device Info',
+//   '1801': 'unknown',
+// };
 
 // the following characteristic UUID segments come from the documentation at
 // http://forum.developer.parrot.com/t/minidrone-characteristics-uuid/4686/3
@@ -33,10 +54,10 @@ const serviceUuids = {
 // the types of commands and data coming back are also documented here
 // http://forum.developer.parrot.com/t/ble-characteristics-of-minidrones/5912/2
 const characteristicReceiveUuids = new Enum({
-  'ACK_DRONE_DATA': '0e', // drone data that needs an ack (needs to be ack on 1e)
-  'NO_ACK_DRONE_DATA': '0f', // data from drone (including battery and others), no ack
-  'ACK_COMMAND_SENT': '1b', // ack 0b channel, SEND_WITH_ACK
-  'ACK_HIGH_PRIORITY': '1c', // ack 0c channel, SEND_HIGH_PRIORITY
+  ACK_DRONE_DATA: '0e', // drone data that needs an ack (needs to be ack on 1e)
+  NO_ACK_DRONE_DATA: '0f', // data from drone (including battery and others), no ack
+  ACK_COMMAND_SENT: '1b', // ack 0b channel, SEND_WITH_ACK
+  ACK_HIGH_PRIORITY: '1c', // ack 0c channel, SEND_HIGH_PRIORITY
 });
 
 /**
@@ -49,7 +70,7 @@ const characteristicReceiveUuids = new Enum({
  * @fires DroneCommand#sensor:
  * @property {CommandParser} parser - {@link CommandParser} instance
  */
-export default class DroneConnection extends EventEmitter {
+module.exports = class DroneConnection extends EventEmitter {
   /**
    * Creates a new DroneConnection instance
    * @param {string} [droneFilter=] - The drone name leave blank for no filter
@@ -71,7 +92,7 @@ export default class DroneConnection extends EventEmitter {
     // it. So we need to prevent webpack from
     // pre-loading it.
     // eslint-disable-next-line no-eval
-    this.noble = eval('require(\'noble\')');
+    this.noble = eval("require('noble')");
     this.parser = new CommandParser();
 
     if (warmup) {
@@ -81,7 +102,9 @@ export default class DroneConnection extends EventEmitter {
 
     // bind noble event handlers
     this.noble.on('stateChange', state => this._onNobleStateChange(state));
-    this.noble.on('discover', peripheral => this._onPeripheralDiscovery(peripheral));
+    this.noble.on('discover', peripheral =>
+      this._onPeripheralDiscovery(peripheral)
+    );
   }
 
   /**
@@ -116,7 +139,7 @@ export default class DroneConnection extends EventEmitter {
 
     this.noble.stopScanning();
 
-    peripheral.connect((error) => {
+    peripheral.connect(error => {
       if (error) {
         throw error;
       }
@@ -141,8 +164,13 @@ export default class DroneConnection extends EventEmitter {
     const manufacturer = peripheral.advertisement.manufacturerData;
     const matchesFilter = !this.droneFilter || localName === this.droneFilter;
 
-    const localNameMatch = matchesFilter || DRONE_PREFIXES.some((prefix) => localName && localName.indexOf(prefix) >= 0);
-    const manufacturerMatch = manufacturer && MANUFACTURER_SERIALS.indexOf(manufacturer) >= 0;
+    const localNameMatch =
+      matchesFilter ||
+      DRONE_PREFIXES.some(
+        prefix => localName && localName.indexOf(prefix) >= 0
+      );
+    const manufacturerMatch =
+      manufacturer && MANUFACTURER_SERIALS.indexOf(manufacturer) >= 0;
 
     // Is TRUE according to droneFilter or if empty, for EITHER an "RS_" name OR manufacturer code.
     return localNameMatch || manufacturerMatch;
@@ -153,52 +181,56 @@ export default class DroneConnection extends EventEmitter {
    * @return {undefined}
    */
   _setupPeripheral() {
-    this.peripheral.discoverAllServicesAndCharacteristics((err, services, characteristics) => {
-      if (err) {
-        throw err;
-      }
+    this.peripheral.discoverAllServicesAndCharacteristics(
+      (err, services, characteristics) => {
+        if (err) {
+          throw err;
+        }
 
-      // @todo
-      // Parse characteristics and only store the ones needed
-      // also validate that they're also present
-      this.characteristics = characteristics;
+        // @todo
+        // Parse characteristics and only store the ones needed
+        // also validate that they're also present
+        this.characteristics = characteristics;
 
-      Logger.debug('Preforming handshake');
-      for (const uuid of handshakeUuids) {
-        const target = this.getCharacteristic(uuid);
+        Logger.debug('Preforming handshake');
+        for (const uuid of handshakeUuids) {
+          const target = this.getCharacteristic(uuid);
 
-        target.subscribe();
-      }
+          target.subscribe();
+        }
 
-      Logger.debug('Adding listeners');
-      for (const uuid of characteristicReceiveUuids.values()) {
-        const target = this.getCharacteristic('fb' + uuid);
+        Logger.debug('Adding listeners');
+        for (const uuid of characteristicReceiveUuids.values()) {
+          const target = this.getCharacteristic(`fb${uuid}`);
 
-        target.subscribe();
-        target.on('data', data => this._handleIncoming(uuid, data));
-      }
+          target.subscribe();
+          target.on('data', data => this._handleIncoming(uuid, data));
+        }
 
-      Logger.info(`Device connected ${this.peripheral.advertisement.localName}`);
+        Logger.info(
+          `Device connected ${this.peripheral.advertisement.localName}`
+        );
 
-      // Register some event handlers
-      /**
-       * Drone disconnected event
-       * Fired when the bluetooth connection has been disconnected
-       *
-       * @event DroneCommand#disconnected
-       */
-      this.noble.on('disconnect', () => this.emit('disconnected'));
-
-      setTimeout(() => {
+        // Register some event handlers
         /**
-         * Drone connected event
-         * You can control the drone once this event has been triggered.
+         * Drone disconnected event
+         * Fired when the bluetooth connection has been disconnected
          *
-         * @event DroneCommand#connected
+         * @event DroneCommand#disconnected
          */
-        this.emit('connected');
-      }, 200);
-    });
+        this.noble.on('disconnect', () => this.emit('disconnected'));
+
+        setTimeout(() => {
+          /**
+           * Drone connected event
+           * You can control the drone once this event has been triggered.
+           *
+           * @event DroneCommand#connected
+           */
+          this.emit('connected');
+        }, 200);
+      }
+    );
   }
 
   /**
@@ -220,11 +252,13 @@ export default class DroneConnection extends EventEmitter {
    * @param {String} uuid The characteristics UUID
    * @return {Characteristic} The Noble Characteristic corresponding to that UUID
    */
-  getCharacteristic(uuid) {
-    uuid = uuid.toLowerCase();
+  getCharacteristic(rawUuid) {
+    const uuid = rawUuid.toLowerCase();
 
     if (typeof this._characteristicLookupCache[uuid] === 'undefined') {
-      this._characteristicLookupCache[uuid] = this.characteristics.find(x => x.uuid.substr(4, 4).toLowerCase() === uuid);
+      this._characteristicLookupCache[uuid] = this.characteristics.find(
+        x => x.uuid.substr(4, 4).toLowerCase() === uuid
+      );
     }
 
     return this._characteristicLookupCache[uuid];
@@ -239,9 +273,8 @@ export default class DroneConnection extends EventEmitter {
 
     const buffer = command.toBuffer();
     const messageId = this._getStep(command.bufferType);
-
-    buffer.writeUInt16LE(messageId, 1);
-
+    buffer.writeIntLE(messageId, 1);
+    // console.log(command.bufferType, 'type');
     this.getCharacteristic(command.sendCharacteristicUuid).write(buffer, true);
   }
 
@@ -253,6 +286,7 @@ export default class DroneConnection extends EventEmitter {
    */
   _handleIncoming(channelUuid, buffer) {
     const channel = characteristicReceiveUuids.findForValue(channelUuid);
+    // console.log('channel', channel);
     let callback;
 
     switch (channel) {
@@ -289,14 +323,18 @@ export default class DroneConnection extends EventEmitter {
    * @fires DroneConnection#sensor:
    * @todo implement ack
    */
-  _updateSensors(buffer, ack = false) {
+  _updateSensors(buffer /* , ack = false*/) {
     if (buffer[0] === 0) {
       return;
     }
 
     try {
-      const command = this._parser.parseBuffer(buffer);
-      const token = [command.projectName, command.className, command.commandName].join('-');
+      const command = this.parser.parseBuffer(buffer);
+      const token = [
+        command.projectName,
+        command.className,
+        command.commandName,
+      ].join('-');
 
       this._sensorStore[token] = command;
 
@@ -314,7 +352,7 @@ export default class DroneConnection extends EventEmitter {
        *  }
        * });
        */
-      this.emit('sensor:' + token, command);
+      this.emit(`sensor:${token}`, command);
       this.emit('sensor:*', command);
     } catch (e) {
       Logger.warn('Unable to parse packet:', buffer);
@@ -385,8 +423,8 @@ export default class DroneConnection extends EventEmitter {
 
     const out = this._stepStore[id];
 
-    this._stepStore[id] = this._stepStore[id] + 1 & 0xFF;
+    this._stepStore[id] = (this._stepStore[id] + 1) & 0xff;
 
     return out;
   }
-}
+};

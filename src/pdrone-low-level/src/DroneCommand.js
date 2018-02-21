@@ -1,5 +1,5 @@
-import DroneCommandArgument from './DroneCommandArgument';
-import Enum from './util/Enum';
+const DroneCommandArgument = require('./DroneCommandArgument');
+const Enum = require('./util/Enum');
 
 const bufferType = new Enum({
   ACK: 0x02, // Acknowledgment of previously received data
@@ -50,7 +50,7 @@ const characteristicSendUuids = new Enum({
  *
  * drone.runCommand(backFlip);
  */
-export default class DroneCommand {
+module.exports = class DroneCommand {
   /**
    * Creates a new DroneCommand instance
    * @param {object} project - Project node from the xml spec
@@ -175,7 +175,7 @@ export default class DroneCommand {
   get sendCharacteristicUuid() {
     const t = bufferCharTranslationMap[this.bufferType] || 'SEND_WITH_ACK';
 
-    return 'fa' + characteristicSendUuids[t];
+    return `fa${characteristicSendUuids[t]}`;
   }
 
   /**
@@ -202,7 +202,8 @@ export default class DroneCommand {
    * @throws TypeError
    */
   toBuffer() {
-    const bufferLength = 6 + this.arguments.reduce((acc, val) => val.getValueSize() + acc, 0);
+    const bufferLength =
+      6 + this.arguments.reduce((acc, val) => val.getValueSize() + acc, 0);
     const buffer = new Buffer(bufferLength);
 
     buffer.fill(0);
@@ -244,7 +245,11 @@ export default class DroneCommand {
           buffer.writeDoubleLE(arg.value, bufferOffset);
           break;
         default:
-          throw new TypeError(`Can't encode buffer: unknown data type "${arg.type}" for argument "${arg.name}" in ${this.getToken()}`);
+          throw new TypeError(
+            `Can't encode buffer: unknown data type "${
+              arg.type
+            }" for argument "${arg.name}" in ${this.getToken()}`
+          );
       }
 
       bufferOffset += valueSize;
@@ -286,9 +291,12 @@ export default class DroneCommand {
    * str === 'minidrone PilotingSettingsState PreferredPilotingModeChanged (enum)mode="medium"(1)';
    */
   toString(debug = false) {
-    const argStr = this.arguments.map(x => x.toString(debug)).join(' ').trim();
+    const argStr = this.arguments
+      .map(x => x.toString(debug))
+      .join(' ')
+      .trim();
 
-    return (this.getToken() + ' ' + argStr).trim();
+    return `${this.getToken()} ${argStr}`.trim();
   }
 
   /**
@@ -319,4 +327,4 @@ export default class DroneCommand {
   getToken() {
     return [this.projectName, this.className, this.commandName].join('-');
   }
-}
+};
