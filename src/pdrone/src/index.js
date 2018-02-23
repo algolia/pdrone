@@ -16,6 +16,15 @@ module.exports = function pdrone({ id, debug = false }) {
   const droneConnection = new DroneConnection(id);
   const drone = new EventEmitter();
   drone.connection = droneConnection;
+  drone.isConnected = false;
+
+  let flyParams = {
+    roll: 0,
+    pitch: 0,
+    yaw: 0,
+    gaz: 0
+  };
+  let interval = null;
 
   if (debug === true) {
     require('winston').level = 'debug';
@@ -23,6 +32,9 @@ module.exports = function pdrone({ id, debug = false }) {
 
   // force drone to stay connected
   drone.connection.on('connected', () => {
+    drone.isConnected = true;
+    // do not remove, safety measure
+    drone.runCommand('minidrone', 'PilotingSettings', 'MaxAltitude', { current: 3 });
     // protocol says it will disconnect after 5 seconds of inactivity
     setInterval(() => {
       drone.runCommand('minidrone', 'NavigationDataState', 'DronePosition');
@@ -35,18 +47,51 @@ module.exports = function pdrone({ id, debug = false }) {
     return droneConnection.runCommand(command);
   };
 
+
+  drone.wait = async (delay) => {
+    return new Promise(resolve => setTimeout(resolve, delay));
+  }
+
   // easy to use commands
   drone.flatTrim = () => drone.runCommand('minidrone', 'Piloting', 'FlatTrim');
-  drone.takeOff = () => drone.runCommand('minidrone', 'Piloting', 'TakeOff');
-  drone.fly = opts =>
-    drone.runCommand('minidrone', 'Piloting', 'PCMD', {
-      timestamp: 0,
-      flag: true,
-      ...opts,
-    });
-  drone.land = () => drone.runCommand('minidrone', 'Piloting', 'Landing');
-  drone.emergency = () =>
+  drone.takeOff = () => {
+    drone.runCommand('minidrone', 'Piloting', 'TakeOff');
+    drone.closeClaw();
+    interval = setInterval(() => {
+      drone.runCommand('minidrone', 'Piloting', 'PCMD', {
+        timestamp: 0,
+        flag: true,
+        ...flyParams,
+      });
+    }, 100);
+  }
+  drone.fly = (opts = {}) => {
+    flyParams = {
+      roll: 0,
+      pitch: 0,
+      yaw: 0,
+      gaz: 0,
+      ...opts
+    };
+  }
+  drone.land = () => {
+    clearInterval(interval);
+    drone.runCommand('minidrone', 'Piloting', 'Landing');
+  }
+  drone.emergency = () => {
+    clearInterval(interval);
     drone.runCommand('minidrone', 'Piloting', 'Emergency');
+  }
+  drone.safeLandingAndExit = () => {
+    if (!drone.isConnected) {
+      process.exit();
+    }
+    drone.land();
+    setTimeout(() => {
+      drone.emergency();
+      process.exit();
+    }, 5000);
+  }
   drone.autoTakeOff = () =>
     drone.runCommand('minidrone', 'Piloting', 'AutoTakeOffMode');
   drone.flip = ({ direction }) =>
