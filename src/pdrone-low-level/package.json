@@ -10,7 +10,7 @@
     "Matthieu Dumont <matthieu.dumont@algolia.com>"
   ],
   "dependencies": {
-    "arsdk-xml": "https://github.com/algolia/arsdk-xml/archive/ac7193af6b93313d38c645354b185ab4fe85083a.tar.gz",
+    "arsdk-xml": "1.0.0",
     "case": "1.5.4",
     "noble": "https://github.com/noble/noble/archive/3cfb558c9f31aa9e1e5690f036fd2efcaf208d8e.tar.gz",
     "resolve": "1.5.0",
