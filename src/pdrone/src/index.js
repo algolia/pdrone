@@ -22,7 +22,7 @@ module.exports = function pdrone({ id, debug = false }) {
     roll: 0,
     pitch: 0,
     yaw: 0,
-    gaz: 0
+    gaz: 0,
   };
   let interval = null;
 
@@ -34,7 +34,9 @@ module.exports = function pdrone({ id, debug = false }) {
   drone.connection.on('connected', () => {
     drone.isConnected = true;
     // do not remove, safety measure
-    drone.runCommand('minidrone', 'PilotingSettings', 'MaxAltitude', { current: 3 });
+    drone.runCommand('minidrone', 'PilotingSettings', 'MaxAltitude', {
+      current: 3,
+    });
     // protocol says it will disconnect after 5 seconds of inactivity
     setInterval(() => {
       drone.runCommand('minidrone', 'NavigationDataState', 'DronePosition');
@@ -47,10 +49,7 @@ module.exports = function pdrone({ id, debug = false }) {
     return droneConnection.runCommand(command);
   };
 
-
-  drone.wait = async (delay) => {
-    return new Promise(resolve => setTimeout(resolve, delay));
-  }
+  drone.wait = delay => new Promise(resolve => setTimeout(resolve, delay));
 
   // easy to use commands
   drone.flatTrim = () => drone.runCommand('minidrone', 'Piloting', 'FlatTrim');
@@ -64,34 +63,36 @@ module.exports = function pdrone({ id, debug = false }) {
         ...flyParams,
       });
     }, 100);
-  }
+  };
   drone.fly = (opts = {}) => {
     flyParams = {
       roll: 0,
       pitch: 0,
       yaw: 0,
       gaz: 0,
-      ...opts
+      ...opts,
     };
-  }
+  };
   drone.land = () => {
     clearInterval(interval);
     drone.runCommand('minidrone', 'Piloting', 'Landing');
-  }
+  };
   drone.emergency = () => {
     clearInterval(interval);
     drone.runCommand('minidrone', 'Piloting', 'Emergency');
-  }
+  };
   drone.safeLandingAndExit = () => {
     if (!drone.isConnected) {
+      // eslint-disable-next-line no-process-exit
       process.exit();
     }
     drone.land();
     setTimeout(() => {
       drone.emergency();
+      // eslint-disable-next-line no-process-exit
       process.exit();
     }, 5000);
-  }
+  };
   drone.autoTakeOff = () =>
     drone.runCommand('minidrone', 'Piloting', 'AutoTakeOffMode');
   drone.flip = ({ direction }) =>
