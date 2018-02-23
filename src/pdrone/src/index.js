@@ -2,6 +2,15 @@ const camelcase = require('camelcase');
 const { DroneConnection, CommandParser } = require('pdrone-low-level');
 const EventEmitter = require('events');
 
+const formatArguments = args =>
+  args.reduce(
+    (acc, cur) => ({
+      ...acc,
+      [cur._name]: cur._value,
+    }),
+    {}
+  );
+
 module.exports = function pdrone({ id, debug = false }) {
   const commandParser = new CommandParser();
   const droneConnection = new DroneConnection(id);
@@ -37,7 +46,7 @@ module.exports = function pdrone({ id, debug = false }) {
     });
   drone.land = () => drone.runCommand('minidrone', 'Piloting', 'Landing');
   drone.emergency = () =>
-    drone.runCommand('minidrone', 'Piloting', 'emergency');
+    drone.runCommand('minidrone', 'Piloting', 'Emergency');
   drone.autoTakeOff = () =>
     drone.runCommand('minidrone', 'Piloting', 'AutoTakeOffMode');
   drone.flip = ({ direction }) =>
@@ -76,14 +85,14 @@ module.exports = function pdrone({ id, debug = false }) {
 
   drone.connection.on('sensor:minidrone-PilotingState-FlyingStateChanged', e =>
     drone.emit('sensor', {
-      name: 'flyingStateChange',
+      name: 'status',
       value: camelcase(e.state._enum.findForValue(e.state._value)),
     })
   );
 
   drone.connection.on('sensor:minidrone-PilotingState-AlertStateChanged', e =>
     drone.emit('sensor', {
-      name: 'alertStateChange',
+      name: 'alert',
       value: camelcase(e.state._enum.findForValue(e.state._value)),
     })
   );
@@ -100,6 +109,36 @@ module.exports = function pdrone({ id, debug = false }) {
       name: 'gun',
       value: camelcase(e.state._enum.findForValue(e.state._value)),
     })
+  );
+
+  drone.connection.on('sensor:minidrone-NavigationDataState-DronePosition', e =>
+    drone.emit('sensor', {
+      name: 'position',
+      value: formatArguments(e._arguments),
+    })
+  );
+
+  drone.connection.on('sensor:minidrone-NavigationDataState-DroneSpeed', e =>
+    drone.emit('sensor', {
+      name: 'speed',
+      value: formatArguments(e._arguments),
+    })
+  );
+
+  drone.connection.on('sensor:minidrone-NavigationDataState-DroneAltitude', e =>
+    drone.emit('sensor', {
+      name: 'altitude',
+      value: formatArguments(e._arguments),
+    })
+  );
+
+  drone.connection.on(
+    'sensor:minidrone-NavigationDataState-DroneQuaternion',
+    e =>
+      drone.emit('sensor', {
+        name: 'quaternion',
+        value: formatArguments(e._arguments),
+      })
   );
 
   return drone;

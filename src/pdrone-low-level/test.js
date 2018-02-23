@@ -1,6 +1,4 @@
 /* eslint-disable no-console */
-require('winston').level = 'debug';
-
 const { CommandParser } = require('./index');
 const parser = new CommandParser();
 
