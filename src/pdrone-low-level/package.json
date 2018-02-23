@@ -10,9 +10,9 @@
     "Matthieu Dumont <matthieu.dumont@algolia.com>"
   ],
   "dependencies": {
-    "arsdk-xml": "https://github.com/Parrot-Developers/arsdk-xml/archive/f241e26d3f0a95b014e6948a23500ddd855b62c2.tar.gz",
+    "arsdk-xml": "Parrot-Developers/arsdk-xml#f241e26d3f0a95b014e6948a23500ddd855b62c2",
     "case": "1.5.4",
-    "noble": "https://github.com/noble/noble/archive/3cfb558c9f31aa9e1e5690f036fd2efcaf208d8e.tar.gz",
+    "noble": "noble/noble#3cfb558c9f31aa9e1e5690f036fd2efcaf208d8e",
     "resolve": "1.5.0",
     "winston": "2.4.0",
     "xml2js": "0.4.19"

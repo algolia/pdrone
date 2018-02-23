@@ -213,9 +213,9 @@ arrify@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-1.0.1.tgz#898508da2226f380df904728456849c1501a4b0d"
 
-"arsdk-xml@https://github.com/Parrot-Developers/arsdk-xml/archive/f241e26d3f0a95b014e6948a23500ddd855b62c2.tar.gz":
+arsdk-xml@Parrot-Developers/arsdk-xml#f241e26d3f0a95b014e6948a23500ddd855b62c2:
   version "0.0.0"
-  resolved "https://github.com/Parrot-Developers/arsdk-xml/archive/f241e26d3f0a95b014e6948a23500ddd855b62c2.tar.gz#81927d4d2ad415fb9977e1d04351e0d3d76a5b72"
+  resolved "https://codeload.github.com/Parrot-Developers/arsdk-xml/tar.gz/f241e26d3f0a95b014e6948a23500ddd855b62c2"
 
 asn1@~0.2.3:
   version "0.2.3"
@@ -2437,9 +2437,9 @@ natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
 
-"noble@https://github.com/noble/noble/archive/3cfb558c9f31aa9e1e5690f036fd2efcaf208d8e.tar.gz":
+noble@noble/noble#3cfb558c9f31aa9e1e5690f036fd2efcaf208d8e:
   version "1.9.0"
-  resolved "https://github.com/noble/noble/archive/3cfb558c9f31aa9e1e5690f036fd2efcaf208d8e.tar.gz#b6374c3b67fe01dd5995cfbf24a42406cb054a3d"
+  resolved "https://codeload.github.com/noble/noble/tar.gz/3cfb558c9f31aa9e1e5690f036fd2efcaf208d8e"
   dependencies:
     debug "~2.2.0"
   optionalDependencies:
