@@ -35,7 +35,7 @@ module.exports = function pdrone({ id, debug = false }) {
     drone.isConnected = true;
     // do not remove, safety measure
     drone.runCommand('minidrone', 'PilotingSettings', 'MaxAltitude', {
-      current: 2.3,
+      current: 2,
     });
     // protocol says it will disconnect after 5 seconds of inactivity
     setInterval(() => {
