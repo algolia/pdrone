@@ -217,6 +217,10 @@ arsdk-xml@Parrot-Developers/arsdk-xml#f241e26d3f0a95b014e6948a23500ddd855b62c2:
   version "0.0.0"
   resolved "https://codeload.github.com/Parrot-Developers/arsdk-xml/tar.gz/f241e26d3f0a95b014e6948a23500ddd855b62c2"
 
+"arsdk-xml@https://github.com/algolia/arsdk-xml/archive/ac7193af6b93313d38c645354b185ab4fe85083a.tar.gz":
+  version "1.0.0"
+  resolved "https://github.com/algolia/arsdk-xml/archive/ac7193af6b93313d38c645354b185ab4fe85083a.tar.gz#a7957adb2ff3fb6a975615e048b4e7bdc3b44f25"
+
 asn1@~0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/asn1/-/asn1-0.2.3.tgz#dac8787713c9966849fc8180777ebe9c1ddf3b86"
@@ -2437,6 +2441,16 @@ natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
 
+"noble@https://github.com/noble/noble/archive/3cfb558c9f31aa9e1e5690f036fd2efcaf208d8e.tar.gz":
+  version "1.9.0"
+  resolved "https://github.com/noble/noble/archive/3cfb558c9f31aa9e1e5690f036fd2efcaf208d8e.tar.gz#b6374c3b67fe01dd5995cfbf24a42406cb054a3d"
+  dependencies:
+    debug "~2.2.0"
+  optionalDependencies:
+    bluetooth-hci-socket "^0.5.1"
+    bplist-parser "0.0.6"
+    xpc-connection "~0.1.4"
+
 noble@noble/noble#3cfb558c9f31aa9e1e5690f036fd2efcaf208d8e:
   version "1.9.0"
   resolved "https://codeload.github.com/noble/noble/tar.gz/3cfb558c9f31aa9e1e5690f036fd2efcaf208d8e"
@@ -2697,6 +2711,17 @@ path-type@^3.0.0:
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-3.0.0.tgz#cef31dc8e0a1a3bb0d105c0cd97cf3bf47f4e36f"
   dependencies:
     pify "^3.0.0"
+
+pdrone-low-level@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/pdrone-low-level/-/pdrone-low-level-1.1.1.tgz#c4f697348428c85885df5fc7ad7c112a0df946aa"
+  dependencies:
+    arsdk-xml Parrot-Developers/arsdk-xml#f241e26d3f0a95b014e6948a23500ddd855b62c2
+    case "1.5.4"
+    noble noble/noble#3cfb558c9f31aa9e1e5690f036fd2efcaf208d8e
+    resolve "1.5.0"
+    winston "2.4.0"
+    xml2js "0.4.19"
 
 performance-now@^0.2.0:
   version "0.2.0"
