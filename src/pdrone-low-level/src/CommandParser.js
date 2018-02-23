@@ -109,7 +109,9 @@ module.exports = class CommandParser {
    * @returns {DroneCommand} - Buffer's related DroneCommand
    * @private
    */
-  _getCommandFromBuffer(buffer) {
+  _getCommandFromBuffer(_buffer) {
+    const firstCell = _buffer.readUInt8(0);
+    const buffer = firstCell > 0x80 ? _buffer.slice(1) : _buffer;
     const projectId = buffer.readUInt8(0);
     const classId = buffer.readUInt8(1);
     const commandId = buffer.readUInt8(2);
@@ -164,7 +166,7 @@ module.exports = class CommandParser {
   parseBuffer(buffer) {
     const command = this._getCommandFromBuffer(buffer);
 
-    let bufferOffset = 3;
+    let bufferOffset = 4;
 
     for (const arg of command.arguments) {
       let valueSize = arg.getValueSize();
@@ -203,7 +205,7 @@ module.exports = class CommandParser {
           }
           break;
         case 'float':
-          value = buffer.readFloatBE(bufferOffset);
+          value = buffer.readFloatLE(bufferOffset);
           break;
         case 'double':
           value = buffer.readDoubleLE(bufferOffset);
