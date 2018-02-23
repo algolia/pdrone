@@ -31,5 +31,9 @@
     "eslint-plugin-import": "2.8.0",
     "eslint-plugin-prettier": "2.6.0",
     "prettier": "1.10.2"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "npm run lint"
   }
 }

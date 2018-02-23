@@ -14,7 +14,7 @@ module.exports = class CommandParser {
    * CommandParser constructor
    */
   constructor() {
-    if (typeof CommandParser._fileCache === 'undefined') {
+    if (CommandParser._fileCache === undefined) {
       CommandParser._fileCache = {};
     }
 
@@ -30,11 +30,11 @@ module.exports = class CommandParser {
   _getJson(name) {
     const file = this._getXml(name);
 
-    if (typeof file === 'undefined') {
+    if (file === undefined) {
       throw new Error(`Xml file ${name} could not be found`);
     }
 
-    if (typeof CommandParser._fileCache[name] === 'undefined') {
+    if (CommandParser._fileCache[name] === undefined) {
       CommandParser._fileCache[name] = null;
 
       parseString(file, { async: false }, (e, result) => {
@@ -66,7 +66,7 @@ module.exports = class CommandParser {
   getCommand(projectName, className, commandName, commandArguments = {}) {
     const cacheToken = [projectName, className, commandName].join('-');
 
-    if (typeof this._commandCache[cacheToken] === 'undefined') {
+    if (this._commandCache[cacheToken] === undefined) {
       const project = this._getJson(projectName).project;
 
       this._assertElementExists(project, 'project', projectName);
@@ -117,7 +117,7 @@ module.exports = class CommandParser {
     const cacheToken = [projectId, classId, commandId].join('-');
 
     // Build command if needed
-    if (typeof this._commandCache[cacheToken] === 'undefined') {
+    if (this._commandCache[cacheToken] === undefined) {
       // Find project
       const project = CommandParser._files
         .map(x => this._getJson(x).project)
@@ -242,7 +242,7 @@ module.exports = class CommandParser {
    * @private
    */
   static get _files() {
-    if (typeof this.__files === 'undefined') {
+    if (this.__files === undefined) {
       const arsdkXmlPath = CommandParser._arsdkXmlPath;
 
       const isFile = filePath => fs.lstatSync(filePath).isFile();
@@ -271,7 +271,7 @@ module.exports = class CommandParser {
    * @returns {void}
    */
   _assertElementExists(value, type, target, context = []) {
-    if (typeof value === 'undefined') {
+    if (value === undefined) {
       throw new InvalidCommandError(value, type, target, context);
     }
   }
@@ -295,7 +295,7 @@ module.exports = class CommandParser {
    * @private
    */
   static get _arsdkXmlPath() {
-    if (typeof this.__arsdkPath === 'undefined') {
+    if (this.__arsdkPath === undefined) {
       this.__arsdkPath = path.dirname(resolve.sync('arsdk-xml/xml/common.xml'));
     }
 

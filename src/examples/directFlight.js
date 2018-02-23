@@ -25,7 +25,7 @@ function setFlightParams(data) {
 
 let startTime;
 function writeFlightParams() {
-  if (typeof startTime === 'undefined') {
+  if (startTime === undefined) {
     startTime = Date.now();
   }
 

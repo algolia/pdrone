@@ -255,7 +255,7 @@ module.exports = class DroneConnection extends EventEmitter {
   getCharacteristic(rawUuid) {
     const uuid = rawUuid.toLowerCase();
 
-    if (typeof this._characteristicLookupCache[uuid] === 'undefined') {
+    if (this._characteristicLookupCache[uuid] === undefined) {
       this._characteristicLookupCache[uuid] = this.characteristics.find(
         x => x.uuid.substr(4, 4).toLowerCase() === uuid
       );
@@ -417,13 +417,17 @@ module.exports = class DroneConnection extends EventEmitter {
    * @returns {number}
    */
   _getStep(id) {
-    if (typeof this._stepStore[id] === 'undefined') {
+    if (this._stepStore[id] === undefined) {
       this._stepStore[id] = 0;
     }
 
     const out = this._stepStore[id];
 
-    this._stepStore[id] = (this._stepStore[id] + 1) & 0xff;
+    this._stepStore[id] = this._stepStore[id] + 1;
+
+    if (this._stepStore[id] > 255) {
+      this._stepStore[id] = 0;
+    }
 
     return out;
   }
