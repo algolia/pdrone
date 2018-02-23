@@ -79,7 +79,7 @@ module.exports = function pdrone({ id, debug = false }) {
   });
 
   // events forwarding
-  drone.connection.on('sensor:minidrone-PilotingState-FlatTrimChanged', e =>
+  drone.connection.on('sensor:minidrone-PilotingState-FlatTrimChanged', () =>
     drone.emit('sensor', { name: 'flatTrimDone' })
   );
 
