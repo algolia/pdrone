@@ -35,12 +35,12 @@ module.exports = function pdrone({ id, debug = false }) {
     drone.isConnected = true;
     // do not remove, safety measure
     drone.runCommand('minidrone', 'PilotingSettings', 'MaxAltitude', {
-      current: 3,
+      current: 2.3,
     });
     // protocol says it will disconnect after 5 seconds of inactivity
     setInterval(() => {
       drone.runCommand('minidrone', 'NavigationDataState', 'DronePosition');
-    }, 3000);
+    }, 2000);
   });
 
   // low level direct access
