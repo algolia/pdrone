@@ -3,11 +3,11 @@
   "description": "Parrot drones low level library",
   "version": "1.0.0",
   "license": "MIT",
-  "private": true,
   "repository": "vvo/pdrone-js-sdk",
   "authors": [
     "Bas <mega@ioexception.at>",
-    "Vincent Voyer <vincent.voyer@algolia.com>"
+    "Vincent Voyer <vincent.voyer@algolia.com>",
+    "Matthieu Dumont <matthieu.dumont@algolia.com>"
   ],
   "dependencies": {
     "arsdk-xml": "https://github.com/Parrot-Developers/arsdk-xml/archive/f241e26d3f0a95b014e6948a23500ddd855b62c2.tar.gz",
