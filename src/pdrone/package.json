@@ -10,6 +10,8 @@
     "Vincent Voyer <vincent.voyer@algolia.com>"
   ],
   "dependencies": {
-    "pdrone-low-level": "1.0.0"
+    "camelcase": "4.1.0",
+    "pdrone-low-level": "1.0.0",
+    "winston": "2.4.0"
   }
 }

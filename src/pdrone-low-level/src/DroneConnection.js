@@ -1,6 +1,5 @@
 const EventEmitter = require('events');
 const Logger = require('winston');
-Logger.level = 'debug';
 const Enum = require('./util/Enum');
 const CommandParser = require('./CommandParser');
 
