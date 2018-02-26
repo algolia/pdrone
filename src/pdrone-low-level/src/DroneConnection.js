@@ -2,6 +2,7 @@ const EventEmitter = require('events');
 const Logger = require('winston');
 const Enum = require('./util/Enum');
 const CommandParser = require('./CommandParser');
+const noble = require('noble');
 
 const MANUFACTURER_SERIALS = [
   '4300cf1900090100',
@@ -87,11 +88,7 @@ module.exports = class DroneConnection extends EventEmitter {
 
     this.droneFilter = droneFilter;
 
-    // Noble returns an instance when you require
-    // it. So we need to prevent webpack from
-    // pre-loading it.
-    // eslint-disable-next-line no-eval
-    this.noble = eval("require('noble')");
+    this.noble = noble;
     this.parser = new CommandParser();
 
     if (warmup) {
